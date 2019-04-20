@@ -1,0 +1,24 @@
+{
+  "name": "overengineeredtodo",
+  "version": "1.0.0",
+  "description": "Todo demo of three-tier architecture using Docker containers",
+  "main": "index.js",
+  "scripts": {
+    "start": "yarn docker:up",
+    "build": "yarn app:build && yarn server:build && yarn docker:build",
+    "clean": "yarn docker:down && yarn app:clean && yarn server:clean",
+    "dev": "yarn build && yarn start",
+
+    "app:build": "cd app && yarn install && yarn build",
+    "app:clean": "cd app && rm -rf build node_modules",
+
+    "server:build": "cd server && yarn install",
+    "server:clean": "cd server && rm -rf node_modules",
+
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down"
+  },
+  "author": "Steven Laidlaw",
+  "license": "MIT"
+}
