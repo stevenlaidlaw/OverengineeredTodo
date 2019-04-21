@@ -25,15 +25,11 @@ class App extends Component {
   };
 
   async componentDidMount() {
-    this.reloadTodos();
-  }
-
-  reloadTodos = async () => {
     const todos = await get(`${API_PATH}/todo`);
     this.setState({todos});
   }
 
-  addTodo = async () => {
+  addItem = async () => {
     const newTodo = await post(`${API_PATH}/todo`, {
       label: 'New'
     });
@@ -56,7 +52,7 @@ class App extends Component {
   };
 
   deleteItem = async id => {
-    await patch(`${API_PATH}/todo/${id}`, {deleted: false});
+    await patch(`${API_PATH}/todo/${id}`, {deleted: true});
     this.setState({
       todos: this.state.todos.filter(item => item.id !== id)
     });
@@ -66,32 +62,53 @@ class App extends Component {
     const {todos = [], editing} = this.state;
 
     return (
-      <div className="App">
-        <ul>
-          {todos.map(({id, label, complete}) => (
-            <li key={id} className={complete ? 'complete' : ''}>
-              {editing === id ? (
-                <input 
-                  value={label} 
-                  onChange={({target: {value: label}}) => this.updateItem(id, {label})}
-                  onKeyPress={e => {
-                    if (e.key === 'Enter') this.updateItemEditing(id, false);
-                  }}
-                />
-              ) : (
-                <span onClick={() => this.updateItemEditing(id, true)}>{label}</span>
-              )}
-              <button onClick={() => this.updateItem(id, {complete: !complete})}>{complete ? 'Not done' : 'Done'}</button>
-              <button onClick={() => this.deleteItem(id, {deleted: true})}>Delete</button>
-            </li>
-          ))}
-          <li class="add">
-            <button onClick={this.addTodo}>Add</button>
-          </li>
-        </ul>
-      </div>
+      <List
+        todos={todos}
+        editing={editing}
+        updateItem={this.updateItem}
+        updateItemEditing={this.updateItemEditing}
+        deleteItem={this.deleteItem}
+        addItem={this.addItem}
+      />
     );
   }
 }
+
+const List = ({todos, editing, updateItem, updateItemEditing, deleteItem, addItem}) => (
+  <div className="App">
+    <ul>
+      {todos.map(item => (
+        <ListItem
+          {...item}
+          editing={editing}
+          updateItem={updateItem}
+          updateItemEditing={updateItemEditing}
+          deleteItem={deleteItem}
+        />
+      ))}
+      <li class="add">
+        <button onClick={addItem}>Add</button>
+      </li>
+    </ul>
+  </div>
+);
+
+const ListItem = ({id, complete, editing, label, updateItem, updateItemEditing, deleteItem}) => (
+  <li key={id} className={complete ? 'complete' : ''}>
+    {editing === id ? (
+      <input 
+        value={label} 
+        onChange={({target: {value: label}}) => updateItem(id, {label})}
+        onKeyPress={e => {
+          if (e.key === 'Enter') updateItemEditing(id, false);
+        }}
+      />
+    ) : (
+      <span onClick={() => updateItemEditing(id, true)}>{label}</span>
+    )}
+    <button onClick={() => updateItem(id, {complete: !complete})}>{complete ? 'Undo' : 'Done'}</button>
+    <button onClick={() => deleteItem(id)}>Delete</button>
+  </li>
+);
 
 export default App;
