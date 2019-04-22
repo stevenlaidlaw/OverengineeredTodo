@@ -5,7 +5,7 @@ const API_HOST = 'localhost';
 const API_PORT =  8889;
 const API_PATH = `http://${API_HOST}:${API_PORT}`;
 
-const myFetch = async (url, data = {}, method) => await (await fetch(url, {
+const asyncFetch = async (url, data = {}, method) => await (await fetch(url, {
   method,
   headers: {
     'Accept': 'application/json',
@@ -14,9 +14,9 @@ const myFetch = async (url, data = {}, method) => await (await fetch(url, {
   body: method === 'GET' ? undefined : JSON.stringify(data)
 })).json();
 
-const get = async url => await myFetch(url, null, 'GET');
-const patch = async (url, data) => await myFetch(url, data, 'PATCH');
-const post = async (url, data) => await myFetch(url, data, 'POST');
+const get = async url => await asyncFetch(url, null, 'GET');
+const patch = async (url, data) => await asyncFetch(url, data, 'PATCH');
+const post = async (url, data) => await asyncFetch(url, data, 'POST');
 
 class App extends Component {
   state = {
