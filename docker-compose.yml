@@ -1,7 +1,7 @@
 version: '2.1'
 services:
 
-  nginx:
+  app:
     build: 'app'
     restart: on-failure
     ports:
@@ -21,8 +21,14 @@ services:
   server:
     build: 'server'
     restart: on-failure
-    ports:
-      - 8889:8889
+    environment:
+      - DB_HOST=localhost
+      - DB_PORT=5444
+      - DB_NAME=tododb
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+      - API_HOST=localhost
+      - API_PORT=8889
     network_mode: 'host'
     depends_on:
       db:

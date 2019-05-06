@@ -1,16 +1,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const pgp = require('pg-promise')();
-const cors = require('cors')
+const cors = require('cors');
 
-const DB_USERNAME = 'postgres';
-const DB_PASSWORD = 'postgres';
-const DB_HOST = 'localhost';
-const DB_PORT = '5444';
-const DB_NAME = 'tododb';
-
-const PORT = '8889';
-const HOST = 'localhost';
+const {DB_USERNAME, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME, API_PORT, API_HOST} = process.env;
 
 let db = pgp(`postgres://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}`);
 
@@ -58,4 +51,4 @@ app.route('/todo/:id')
 			});
 	});
 
-app.listen(PORT, HOST, () => console.log(`Server running on http://${HOST}:${PORT}`));
+app.listen(API_PORT, API_HOST, () => console.log(`Server running on http://${API_HOST}:${API_PORT}`));
